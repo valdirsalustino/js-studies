@@ -10,6 +10,7 @@ class DOMHelper {
     const destinationElement = document.querySelector(newDestinationSelector);
     // appending an element which already exists move the element from container
     destinationElement.append(element);
+    element.scrollIntoView({behavior: 'smooth'});
   }
 }
 
@@ -21,7 +22,6 @@ class Component {
     } else {
       this.hostElement = document.body;
     }
-
     this.insertBefore = insertBefore;
   }
 
@@ -43,9 +43,10 @@ class Component {
 } 
 
 class Tooltip extends Component {
-  constructor(closeNotifierFunction) {
-    super();  
+  constructor(closeNotifierFunction, tooltipText, hostElementId) {
+    super(hostElementId);  
     this.closeNotifier = closeNotifierFunction;
+    this.tooltipText = tooltipText;
     this.create();
   }
 
@@ -57,7 +58,29 @@ class Tooltip extends Component {
   create() {
     const tooltipElement = document.createElement("div");
     tooltipElement.className = "card";
-    tooltipElement.textContent = "DUMMY!";
+    // tooltipElement.textContent = this.tooltipText;
+    // tooltipElement.innerHTML = `
+    //   <h2>More Info:</h2>
+    //   <p>${this.tooltipText}</p>
+    // `;
+    const tooltipTemplate = document.getElementById('tooltip');
+    const tooltipBody = document.importNode(tooltipTemplate.content, true);
+    tooltipBody.querySelector('p').textContent = this.tooltipText;
+    tooltipElement.append(tooltipBody);
+
+    const hostElPosLeft = this.hostElement.offsetLeft;
+    const hostElPosTop = this.hostElement.offsetTop;
+    const hostElHeight = this.hostElement.clientHeight;
+    // get scroll information;
+    const parentElementScrolling = this.hostElement.parentElement.scrollTop;
+
+    const x = hostElPosLeft + 20;
+    const y = hostElPosTop - parentElementScrolling + hostElHeight - 10;
+
+    tooltipElement.style.position = 'absolute'; 
+    tooltipElement.style.left = x + 'px';
+    tooltipElement.style.top = y + 'px';
+
     tooltipElement.addEventListener('click', this.closeTooltip);
     this.element = tooltipElement;
   }
@@ -78,9 +101,11 @@ class ProjectItem {
     if (this.hasActiveTooltip){
       return;
     }
+    const projectElement = document.getElementById(this.id);
+    const tooltipText = projectElement.dataset.extraInfo;
     const tooltip = new Tooltip(() => {
       this.hasActiveTooltip = false;
-    });
+    }, tooltipText, this.id);
     tooltip.attach();
     this.hasActiveTooltip = true;
   }
@@ -88,7 +113,7 @@ class ProjectItem {
   connectMoreInfoButton() {
     const projectItemElement = document.getElementById(this.id); 
     const moreInfoBtn = projectItemElement.querySelector('button:first-of-type');
-    moreInfoBtn.addEventListener('click', this.showMoreInfoHandler);
+    moreInfoBtn.addEventListener('click', this.showMoreInfoHandler.bind(this));
   }
 
   connectSwitchButton(type) {
@@ -155,6 +180,26 @@ class App {
     finishedProjectsList.setSwitchHandlerFunction(
       activeProjectsList.addProject.bind(activeProjectsList)
     );
+
+    // Example of load script dynamically;
+    // const someScript = document.createElement('script');
+    // someScript.textContent = 'alert("Hi There!")';
+    // document.head.append(someScript);
+
+    const timerId = setTimeout(this.startAnalytics, 3000); // 3 sec. 3000 milisec.
+
+    document.getElementById('stop-analytics-btn').addEventListener('click', () => {
+      clearTimeout(timerId);
+
+    });
+
+  }
+
+  static startAnalytics() {
+    const analyticsScript = document.createElement('script');
+    analyticsScript.src = 'assets/scripts/analytics.js';
+    analyticsScript.defer = true;
+    document.head.append(analyticsScript);
   }
 }
 
