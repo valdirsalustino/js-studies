@@ -64,10 +64,14 @@ function sendHttpRequest(method, url, data=null) {
 
 async function fetchPosts() {
 	try {
-    const responseData = await sendHttpRequest(
-      "GET",
-      "https://jsonplaceholder.typicode.com/posts"
+    // const responseData = await sendHttpRequest(
+    //   "GET",
+    //   "https://jsonplaceholder.typicode.com/posts"
+		// );
+		const response = await axios.get(
+      'https://jsonplaceholder.typicode.com/posts'
 		);
+		responseData = response.data;
     const listOfPosts = responseData;
     for (const post of listOfPosts) {
       const postEl = document.importNode(postTemplate.content, true);
