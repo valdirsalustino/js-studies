@@ -1,3 +1,7 @@
+import * as _ from 'lodash';
+
+console.log(_.difference([0,1], [1,2]));
+
 class DOMHelper {
   static clearEventListeners(element) {
     const clonedElement = element.cloneNode(true);
@@ -44,7 +48,7 @@ class Component {
 
 class Tooltip extends Component {
   constructor(closeNotifierFunction, tooltipText, hostElementId) {
-    super(hostElementId);  
+    super(hostElementId);
     this.closeNotifier = closeNotifierFunction;
     this.tooltipText = tooltipText;
     this.create();
@@ -53,7 +57,7 @@ class Tooltip extends Component {
   closeTooltip = () => {
     this.detach();
     this.closeNotifier();
-  }
+  };
 
   create() {
     const tooltipElement = document.createElement("div");
@@ -63,9 +67,9 @@ class Tooltip extends Component {
     //   <h2>More Info:</h2>
     //   <p>${this.tooltipText}</p>
     // `;
-    const tooltipTemplate = document.getElementById('tooltip');
+    const tooltipTemplate = document.getElementById("tooltip");
     const tooltipBody = document.importNode(tooltipTemplate.content, true);
-    tooltipBody.querySelector('p').textContent = this.tooltipText;
+    tooltipBody.querySelector("p").textContent = this.tooltipText;
     tooltipElement.append(tooltipBody);
 
     const hostElPosLeft = this.hostElement.offsetLeft;
@@ -77,11 +81,11 @@ class Tooltip extends Component {
     const x = hostElPosLeft + 20;
     const y = hostElPosTop - parentElementScrolling + hostElHeight - 10;
 
-    tooltipElement.style.position = 'absolute'; 
-    tooltipElement.style.left = x + 'px';
-    tooltipElement.style.top = y + 'px';
+    tooltipElement.style.position = "absolute";
+    tooltipElement.style.left = x + "px";
+    tooltipElement.style.top = y + "px";
 
-    tooltipElement.addEventListener('click', this.closeTooltip);
+    tooltipElement.addEventListener("click", this.closeTooltip);
     this.element = tooltipElement;
   }
 }
