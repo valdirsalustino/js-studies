@@ -92,4 +92,29 @@ Reflect.setPrototypeOf(course, {
   },
 });
 
-console.log(course.toString());
+// console.log(course.toString());
+
+// -- About Proxy
+
+const courseHandler = {
+  get(obj, propertyName) { // The get trap!
+		console.log(propertyName);
+		if (propertyName === 'length') {
+			return 0;
+		}
+		return obj[propertyName] || 'NOT FOUND!';
+	},
+	set(obj, propertyName, newValue) {
+		console.log('Sending data...'); 	
+		// example to block access to property
+		if (propertyName === 'price') {
+			return;
+		}
+		obj[propertyName] = newValue;
+	}
+};
+
+const pCourse = new Proxy(course, courseHandler);
+pCourse.price = 99;
+console.log(pCourse.title, pCourse.length, pCourse.price);
+
