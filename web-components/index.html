@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Web Components</title>
+	<style>
+		div {
+			border: 2px solid orange;
+		}
+	</style>
+	<script src="tooltip.js" defer></script>
+	<script src="confirm-link.js" defer></script>
+</head>
+<body>
+	<p><vd-tooltip text="Web Components is a set of standards.">Web components</vd-tooltip> are awesome!</p>
+	<vd-tooltip></vd-tooltip>
+	<div>Does not get the web component style.</div>
+	<a href="https://www.google.com">Google</a>
+	<a is="vd-confirm-link" href="https://www.google.com">Google</a>
+</body>
+</html>
